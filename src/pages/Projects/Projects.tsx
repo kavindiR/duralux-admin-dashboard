@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   BarChart3,
   Filter,
@@ -174,6 +174,24 @@ const Projects = () => {
   const [selectedProjects, setSelectedProjects] = useState<Set<number>>(new Set());
   const [showFilter, setShowFilter] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMoreMenu(null);
+      }
+    };
+
+    if (showMoreMenu !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMoreMenu]);
 
   // Handler functions
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -430,7 +448,7 @@ const Projects = () => {
 
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Table Container */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Search and Entries Controls */}
           <div className="bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -595,32 +613,71 @@ const Projects = () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 flex items-center gap-2.5 justify-between">
-                        <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                          <div 
-                            className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                              project.status === 'In Progress' ? 'bg-blue-500' :
-                              project.status === 'Not Started' ? 'bg-orange-500' :
-                              project.status === 'On Hold' ? 'bg-green-500' :
-                              project.status === 'Declined' ? 'bg-red-500' :
-                              project.status === 'Finished' ? 'bg-cyan-500' :
-                              'bg-gray-500'
-                            }`}
-                          />
-                          <span className="text-sm text-gray-900 dark:text-white font-normal">
-                            {project.status}
-                          </span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-auto" />
+                        <select
+                          value={project.status}
+                          onChange={(e) => handleStatusChange(project.id, e.target.value)}
+                          className="flex-1 bg-transparent text-sm text-gray-900 dark:text-white font-normal cursor-pointer appearance-none border-0 outline-none"
+                        >
+                          <option value="In Progress">In Progress</option>
+                          <option value="Not Started">Not Started</option>
+                          <option value="On Hold">On Hold</option>
+                          <option value="Declined">Declined</option>
+                          <option value="Finished">Finished</option>
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 pointer-events-none" />
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 relative">
                       <div className="flex items-center gap-2">
-                        <button className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <button 
+                          onClick={() => handleViewProject(project.id)}
+                          className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                          title="View Project"
+                        >
                           <Eye className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                         </button>
-                        <button className="w-7 h-7 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                          <MoreHorizontal className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
-                        </button>
+                        <div className="relative" ref={menuRef}>
+                          <button 
+                            onClick={(e) => handleMoreOptions(project.id, e)}
+                            className="w-7 h-7 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            title="More Options"
+                          >
+                            <MoreHorizontal className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+                          </button>
+                          {showMoreMenu === project.id && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                              <button 
+                                className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                onClick={() => {
+                                  handleViewProject(project.id);
+                                  setShowMoreMenu(null);
+                                }}
+                              >
+                                View Details
+                              </button>
+                              <button 
+                                className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                onClick={() => {
+                                  navigate(`/projects/create?id=${project.id}`);
+                                  setShowMoreMenu(null);
+                                }}
+                              >
+                                Edit Project
+                              </button>
+                              <button 
+                                className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to delete this project?')) {
+                                    console.log(`Delete project ${project.id}`);
+                                    setShowMoreMenu(null);
+                                  }
+                                }}
+                              >
+                                Delete Project
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -636,19 +693,39 @@ const Projects = () => {
             </div>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 className="px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded text-sm text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Previous
               </button>
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                      currentPage === pageNum
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
               <button
-                className="px-3 py-1.5 bg-blue-600 text-white rounded text-sm font-medium"
-              >
-                {currentPage}
-              </button>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 className="px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
@@ -659,9 +736,46 @@ const Projects = () => {
         </div>
 
         {/* Floating Settings Button */}
-        <button className="fixed right-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-l-lg shadow-lg flex items-center justify-center transition-colors z-50">
+        <button 
+          onClick={handleSettings}
+          className="fixed right-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-l-lg shadow-lg flex items-center justify-center transition-colors z-50"
+          title="Settings"
+        >
           <Settings className="w-6 h-6" />
         </button>
+
+        {/* Filter Dropdown */}
+        {showFilter && (
+          <div className="absolute top-full left-4 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-sm">
+                  <option value="">All Statuses</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Not Started">Not Started</option>
+                  <option value="On Hold">On Hold</option>
+                  <option value="Declined">Declined</option>
+                  <option value="Finished">Finished</option>
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setShowFilter(false)}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+                >
+                  Apply
+                </button>
+                <button 
+                  onClick={() => setShowFilter(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );
