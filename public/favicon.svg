@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#000000"/>
+  <!-- Clean stylized letter D -->
+  <path d="M 28 25 L 28 75 L 48 75 Q 68 75 68 55 L 68 45 Q 68 25 48 25 Z" fill="#FFFFFF"/>
+  <path d="M 33 30 L 33 70 L 48 70 Q 63 70 63 55 L 63 45 Q 63 30 48 30 Z" fill="#000000"/>
+</svg>
