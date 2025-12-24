@@ -198,13 +198,26 @@ export default function Analytics() {
   const blueAreaPath = createAreaPath(blueLineData, redLineData);
   const redAreaPath = createAreaPath(redLineData, new Array(redLineData.length).fill(0));
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePointerMove = useCallback((e: React.MouseEvent<HTMLDivElement> | React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!chartRef.current) return;
     
     const rect = chartRef.current.getBoundingClientRect();
-    const leftMargin = 40; // ml-10 = 2.5rem = 40px
-    const x = e.clientX - rect.left - leftMargin;
-    const chartWidth = rect.width - leftMargin;
+    // Calculate left margin based on screen size (ml-6 on mobile = 24px, ml-8 on sm = 32px, ml-10 on lg = 40px)
+    const isMobile = window.innerWidth < 640;
+    const isSmall = window.innerWidth < 1024;
+    const leftMargin = isMobile ? 24 : isSmall ? 32 : 40;
+    
+    let clientX: number | undefined;
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0]?.clientX;
+    } else if ('clientX' in e) {
+      clientX = e.clientX;
+    }
+    
+    if (!clientX) return;
+    
+    const x = clientX - rect.left - leftMargin;
+    const chartWidth = Math.max(600, rect.width - leftMargin);
     
     if (x < 0 || x > chartWidth) {
       setHoverData(null);
@@ -228,8 +241,28 @@ export default function Analytics() {
     });
   }, [months, greenLineData, blueLineData, redLineData]);
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    handlePointerMove(e);
+  }, [handlePointerMove]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    handlePointerMove(e);
+  }, [handlePointerMove]);
+
+  const handlePointerLeave = useCallback(() => {
     setHoverData(null);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    handlePointerLeave();
+  }, [handlePointerLeave]);
+
+  const handleTouchEnd = useCallback(() => {
+    // Keep tooltip visible briefly on touch end
+    setTimeout(() => {
+      setHoverData(null);
+    }, 2000);
   }, []);
   const emailStats = [
     {
@@ -400,7 +433,7 @@ export default function Analytics() {
         {/* Visitors Overview and Browser States */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Visitors Overview - Left Panel */}
-          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm flex flex-col">
+          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm flex flex-col w-full">
             <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Visitors Overview</h2>
               <button className="p-1 sm:p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors flex-shrink-0">
@@ -409,10 +442,16 @@ export default function Analytics() {
             </div>
             <div 
               ref={chartRef}
-              className="relative w-full cursor-crosshair flex-1 min-h-0 mt-3 sm:mt-6 overflow-x-auto"
-              style={{ minHeight: '250px' }}
+              className="relative w-full cursor-crosshair flex-1 min-h-0 mt-3 sm:mt-6 overflow-x-auto overflow-y-visible"
+              style={{ 
+                minHeight: '250px',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               {/* Y-axis labels */}
               <div className="absolute left-0 top-0 bottom-4 sm:bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10">
@@ -424,8 +463,8 @@ export default function Analytics() {
                 <span>0K</span>
               </div>
               {/* Chart area */}
-              <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-4 sm:bottom-6 right-0 min-w-[600px]">
-                  <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+              <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-4 sm:bottom-6 right-0" style={{ minWidth: '600px', width: 'max(600px, 100%)' }}>
+                  <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet" style={{ minWidth: '600px' }}>
                     <defs>
                       {/* Green gradient (light green) - top area */}
                       <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -571,6 +610,7 @@ export default function Analytics() {
                         left: `${hoverData.x}px`,
                         transform: 'translateX(-50%)',
                         transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
+                        maxWidth: 'calc(100vw - 2rem)',
                       }}
                     >
                       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-3 min-w-[160px] backdrop-blur-sm">
@@ -607,7 +647,7 @@ export default function Analytics() {
                   )}
               </div>
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-4 sm:h-6 items-center min-w-[600px]">
+              <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-4 sm:h-6 items-center" style={{ minWidth: '600px', width: 'max(600px, 100%)' }}>
                 {months.map((month) => (
                   <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
                 ))}
@@ -616,7 +656,7 @@ export default function Analytics() {
           </div>
 
           {/* Browser States - Right Panel */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm relative overflow-visible">
+          <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm relative overflow-visible w-full">
             {/* Header */}
             <div className="flex items-center justify-between mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white" style={{ fontWeight: 700 }}>Browser States</h2>
@@ -664,7 +704,7 @@ export default function Analytics() {
             </div>
 
             {/* Floating Action Button - Right Edge (Square Box) */}
-            <button className="absolute -right-2 sm:-right-3 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10">
+            <button className="absolute -right-2 sm:-right-3 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10">
               <Settings size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
             </button>
           </div>
