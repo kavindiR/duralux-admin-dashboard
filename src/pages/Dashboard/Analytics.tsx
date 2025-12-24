@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
 import {
@@ -85,14 +85,37 @@ const OthersIcon = ({ size = 16 }: { size?: number }) => (
 );
 
 export default function Analytics() {
+  const [isGraphAnimated, setIsGraphAnimated] = useState(false);
+  const [kpiCardAnimated, setKpiCardAnimated] = useState<boolean[]>([false, false, false, false]);
+  const [tooltip, setTooltip] = useState<{
+    visible: boolean;
+    x: number;
+    dataIndex: number;
+    green: number;
+    blue: number;
+    red: number;
+    date: string;
+    position: 'left' | 'center' | 'right';
+  }>({
+    visible: false,
+    x: 0,
+    dataIndex: 0,
+    green: 0,
+    blue: 0,
+    red: 0,
+    date: '',
+    position: 'center',
+  });
+  const [animatedGreen, setAnimatedGreen] = useState(0);
+  const [animatedBlue, setAnimatedBlue] = useState(0);
+  const [animatedRed, setAnimatedRed] = useState(0);
   const [hoverData, setHoverData] = useState<{
     x: number;
     values: { label: string; value: number; color: string }[];
     month: string;
   } | null>(null);
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [isGraphAnimated, setIsGraphAnimated] = useState(false);
-  const [kpiCardAnimated, setKpiCardAnimated] = useState<boolean[]>([false, false, false, false]);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   // Animate main graph on mount
   useEffect(() => {
@@ -122,6 +145,15 @@ export default function Analytics() {
   const greenLineData = [25, 35, 25, 75, 45, 98, 55]; // Top green dotted line
   const blueLineData = [20, 30, 10, 70, 35, 80, 48]; // Middle blue dotted line  
   const redLineData = [15, 40, 18, 68, 30, 78, 43]; // Bottom red dotted line
+  
+  // Combined visitors data for all three lines
+  const visitorsData = blueLineData.map((_, index) => ({
+    green: Math.round(greenLineData[index] * 1000),
+    blue: Math.round(blueLineData[index] * 1000),
+    red: Math.round(redLineData[index] * 1000),
+    date: months[index],
+    index,
+  }));
 
   // Convert data points to SVG path
   const createPath = (data: number[], maxValue: number = 100) => {
@@ -198,26 +230,63 @@ export default function Analytics() {
   const blueAreaPath = createAreaPath(blueLineData, redLineData);
   const redAreaPath = createAreaPath(redLineData, new Array(redLineData.length).fill(0));
 
-  const handlePointerMove = useCallback((e: React.MouseEvent<HTMLDivElement> | React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (!chartRef.current) return;
+  // Tooltip handlers
+  const handleChartInteraction = (clientX: number) => {
+    if (!chartContainerRef.current || !svgRef.current) return;
+
+    const container = chartContainerRef.current;
+    const rect = container.getBoundingClientRect();
+    const scrollLeft = container.scrollLeft;
     
-    const rect = chartRef.current.getBoundingClientRect();
-    // Calculate left margin based on screen size (ml-6 on mobile = 24px, ml-8 on sm = 32px, ml-10 on lg = 40px)
-    const isMobile = window.innerWidth < 640;
-    const isSmall = window.innerWidth < 1024;
-    const leftMargin = isMobile ? 24 : isSmall ? 32 : 40;
+    // Calculate relative X position within the chart
+    const yAxisOffset = 40; // Account for Y-axis labels
+    const relativeX = clientX - rect.left + scrollLeft - yAxisOffset;
     
-    let clientX: number | undefined;
-    if ('touches' in e && e.touches.length > 0) {
-      clientX = e.touches[0]?.clientX;
-    } else if ('clientX' in e) {
-      clientX = e.clientX;
+    // Calculate which data point is closest
+    const chartWidth = 800; // SVG viewBox width
+    const dataPointWidth = chartWidth / (visitorsData.length - 1);
+    const dataIndex = Math.round(relativeX / dataPointWidth);
+    const clampedIndex = Math.max(0, Math.min(visitorsData.length - 1, dataIndex));
+    
+    // Calculate X position in SVG coordinates
+    const svgX = (clampedIndex / (visitorsData.length - 1)) * chartWidth;
+    
+    // Get the data for this point
+    const dataPoint = visitorsData[clampedIndex];
+    
+    // Calculate tooltip position to avoid overlapping with edges
+    const tooltipX = rect.left + scrollLeft + svgX + yAxisOffset;
+    const tooltipWidth = 180; // Approximate tooltip width for stacked card
+    const margin = 20;
+    
+    let position: 'left' | 'center' | 'right' = 'center';
+    if (tooltipX + tooltipWidth / 2 > window.innerWidth - margin) {
+      position = 'right';
+    } else if (tooltipX - tooltipWidth / 2 < margin) {
+      position = 'left';
     }
     
-    if (!clientX) return;
+    setTooltip({
+      visible: true,
+      x: svgX,
+      dataIndex: clampedIndex,
+      green: dataPoint.green,
+      blue: dataPoint.blue,
+      red: dataPoint.red,
+      date: dataPoint.date,
+      position,
+    });
+  };
+
+  // Handle mouse move for plus sign tracking (new system)
+  const handleMouseMoveTracking = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!chartContainerRef.current) return;
     
-    const x = clientX - rect.left - leftMargin;
-    const chartWidth = Math.max(600, rect.width - leftMargin);
+    const rect = chartContainerRef.current.getBoundingClientRect();
+    const leftMargin = 40; // Account for Y-axis labels (ml-10 = 40px)
+    const scrollLeft = chartContainerRef.current.scrollLeft;
+    const x = e.clientX - rect.left + scrollLeft - leftMargin;
+    const chartWidth = 800; // SVG viewBox width
     
     if (x < 0 || x > chartWidth) {
       setHoverData(null);
@@ -228,42 +297,111 @@ export default function Analytics() {
     const index = Math.round((x / chartWidth) * (months.length - 1));
     const clampedIndex = Math.max(0, Math.min(index, months.length - 1));
     
+    // Calculate SVG X position
+    const svgX = (clampedIndex / (months.length - 1)) * chartWidth;
+    
     const values = [
-      { label: 'Series 1', value: greenLineData[clampedIndex], color: '#22c55e' },
-      { label: 'Series 2', value: blueLineData[clampedIndex], color: '#3b82f6' },
-      { label: 'Series 3', value: redLineData[clampedIndex], color: '#ef4444' },
+      { label: 'Green', value: greenLineData[clampedIndex], color: '#22c55e' },
+      { label: 'Blue', value: blueLineData[clampedIndex], color: '#3b82f6' },
+      { label: 'Red', value: redLineData[clampedIndex], color: '#ef4444' },
     ];
 
     setHoverData({
-      x: x + leftMargin, // Add back the left margin
+      x: svgX + leftMargin, // SVG X position + left margin for absolute positioning
       values,
       month: months[clampedIndex],
     });
   }, [months, greenLineData, blueLineData, redLineData]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    handlePointerMove(e);
-  }, [handlePointerMove]);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    handleChartInteraction(e.clientX);
+    handleMouseMoveTracking(e);
+  };
 
-  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    handlePointerMove(e);
-  }, [handlePointerMove]);
-
-  const handlePointerLeave = useCallback(() => {
+  const handleMouseLeave = () => {
+    setTooltip(prev => ({ ...prev, visible: false }));
     setHoverData(null);
-  }, []);
+  };
 
-  const handleMouseLeave = useCallback(() => {
-    handlePointerLeave();
-  }, [handlePointerLeave]);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
-  const handleTouchEnd = useCallback(() => {
-    // Keep tooltip visible briefly on touch end
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      handleChartInteraction(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length > 0 && touchStartX.current !== null && touchStartY.current !== null) {
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      
+      // Only prevent default if user is moving horizontally (interacting with chart)
+      // Allow vertical scrolling
+      if (deltaX > deltaY && deltaX > 5) {
+        e.preventDefault();
+      }
+      
+      handleChartInteraction(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartX.current = null;
+    touchStartY.current = null;
+    // Keep tooltip visible on touch end for mobile
     setTimeout(() => {
-      setHoverData(null);
+      setTooltip(prev => ({ ...prev, visible: false }));
     }, 2000);
-  }, []);
+  };
+
+  // Animate all three counts when tooltip changes
+  useEffect(() => {
+    if (tooltip.visible) {
+      const duration = 500; // Animation duration in ms
+      const startGreen = animatedGreen;
+      const startBlue = animatedBlue;
+      const startRed = animatedRed;
+      const endGreen = tooltip.green;
+      const endBlue = tooltip.blue;
+      const endRed = tooltip.red;
+      const startTime = Date.now();
+
+      const animate = () => {
+        const now = Date.now();
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const currentGreen = Math.round(startGreen + (endGreen - startGreen) * easeOutCubic);
+        const currentBlue = Math.round(startBlue + (endBlue - startBlue) * easeOutCubic);
+        const currentRed = Math.round(startRed + (endRed - startRed) * easeOutCubic);
+        
+        setAnimatedGreen(currentGreen);
+        setAnimatedBlue(currentBlue);
+        setAnimatedRed(currentRed);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setAnimatedGreen(endGreen);
+          setAnimatedBlue(endBlue);
+          setAnimatedRed(endRed);
+        }
+      };
+
+      animate();
+    } else {
+      setAnimatedGreen(0);
+      setAnimatedBlue(0);
+      setAnimatedRed(0);
+    }
+  }, [tooltip.green, tooltip.blue, tooltip.red, tooltip.visible]);
+
   const emailStats = [
     {
       icon: <Mail size={24} />,
@@ -433,7 +571,7 @@ export default function Analytics() {
         {/* Visitors Overview and Browser States */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Visitors Overview - Left Panel */}
-          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm flex flex-col w-full">
+          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm flex flex-col w-full" style={{ overflow: 'visible' }}>
             <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Visitors Overview</h2>
               <button className="p-1 sm:p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors flex-shrink-0">
@@ -441,30 +579,47 @@ export default function Analytics() {
               </button>
             </div>
             <div 
-              ref={chartRef}
-              className="relative w-full cursor-crosshair flex-1 min-h-0 mt-3 sm:mt-6 overflow-x-auto overflow-y-visible"
+              className="relative w-full flex-1 min-h-0 mt-3 sm:mt-6"
               style={{ 
                 minHeight: '250px',
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'thin'
+                overflow: 'visible'
               }}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
             >
-              {/* Y-axis labels */}
-              <div className="absolute left-0 top-0 bottom-4 sm:bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10">
-                <span>100K</span>
-                <span>80K</span>
-                <span>60K</span>
-                <span>40K</span>
-                <span>20K</span>
-                <span>0K</span>
-              </div>
-              {/* Chart area */}
-              <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-4 sm:bottom-6 right-0" style={{ minWidth: '600px', width: 'max(600px, 100%)' }}>
-                  <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet" style={{ minWidth: '600px' }}>
+              {/* Scrollable container for mobile */}
+              <div 
+                ref={chartContainerRef}
+                className="relative w-full h-full overflow-x-auto overflow-y-visible cursor-crosshair"
+                style={{ 
+                  WebkitOverflowScrolling: 'touch',
+                  scrollbarWidth: 'thin',
+                  minHeight: '250px'
+                }}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Inner container with fixed width for chart */}
+                <div className="relative" style={{ minWidth: '600px', height: '100%', minHeight: '250px', overflow: 'visible' }}>
+                  {/* Y-axis labels */}
+                  <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10 h-full">
+                    <span>100K</span>
+                    <span>80K</span>
+                    <span>60K</span>
+                    <span>40K</span>
+                    <span>20K</span>
+                    <span>0K</span>
+                  </div>
+                  {/* Chart area */}
+                  <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-6 right-0" style={{ height: 'calc(100% - 24px)', overflow: 'visible' }}>
+                      <svg 
+                        ref={svgRef}
+                        className="w-full h-full" 
+                        viewBox="0 0 800 200" 
+                        preserveAspectRatio="none" 
+                        style={{ width: '100%', height: '100%' }}
+                      >
                     <defs>
                       {/* Green gradient (light green) - top area */}
                       <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -572,27 +727,31 @@ export default function Analytics() {
                         transition: 'stroke-dasharray 2.5s cubic-bezier(0.4, 0, 0.2, 1), stroke-dashoffset 2.5s cubic-bezier(0.4, 0, 0.2, 1)',
                       }}
                     />
+                    
                   </svg>
 
-                  {/* Hover vertical line */}
+                  {/* Plus sign tracking - Hover vertical line and data points */}
                   {hoverData && (
                     <div
-                      className="absolute top-0 bottom-0 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
+                      className="absolute top-0 bottom-6 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
                       style={{
                         left: `${hoverData.x}px`,
                         transform: 'translateX(-50%)',
                       }}
                     >
-                      {/* Data points on the line */}
+                      {/* Data points on the line - correctly positioned from 0K to 100K */}
                       {hoverData.values.map((value, idx) => {
-                        const yPos = 200 - (value.value / 100) * 200;
+                        // Calculate Y position: 0K is at bottom (100%), 100K is at top (0%)
+                        // The SVG viewBox is 0 0 800 200, where y=0 is top and y=200 is bottom
+                        // Value is 0-100, so we need to map: 0 -> 100% (bottom), 100 -> 0% (top)
+                        const yPercentage = 100 - (value.value / 100) * 100;
                         return (
                           <div
                             key={idx}
-                            className="absolute w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 shadow-sm transition-all duration-200"
+                            className="absolute w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 shadow-sm transition-all duration-200 pointer-events-none"
                             style={{
                               left: '50%',
-                              top: `${(yPos / 200) * 100}%`,
+                              top: `${yPercentage}%`,
                               transform: 'translate(-50%, -50%)',
                               backgroundColor: value.color,
                             }}
@@ -602,55 +761,90 @@ export default function Analytics() {
                     </div>
                   )}
 
-                  {/* Hover tooltip with stacked cards */}
-                  {hoverData && (
-                    <div
-                      className="absolute bottom-full left-0 mb-3 pointer-events-none z-30"
-                      style={{
-                        left: `${hoverData.x}px`,
-                        transform: 'translateX(-50%)',
-                        transition: 'opacity 0.15s ease-out, transform 0.15s ease-out',
-                        maxWidth: 'calc(100vw - 2rem)',
-                      }}
-                    >
-                      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 p-3 min-w-[160px] backdrop-blur-sm">
-                        <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center border-b border-gray-200 dark:border-gray-700 pb-2">
-                          {hoverData.month}
+                  </div>
+                </div>
+                {/* X-axis labels */}
+                <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-6 items-center" style={{ minWidth: '600px' }}>
+                  {months.map((month) => (
+                    <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
+                  ))}
+                </div>
+                
+                {/* Tooltip */}
+                {tooltip.visible && chartContainerRef.current && (
+                  <div
+                    className="absolute pointer-events-none z-50"
+                    style={{
+                      left: `${tooltip.x + 40}px`, // Account for Y-axis offset
+                      top: '10px',
+                      transform: tooltip.position === 'left' 
+                        ? 'translateX(0)' 
+                        : tooltip.position === 'right' 
+                        ? 'translateX(-100%)' 
+                        : 'translateX(-50%)',
+                      transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
+                      opacity: tooltip.visible ? 1 : 0,
+                      maxWidth: 'calc(100% - 20px)',
+                    }}
+                  >
+                    <div className="bg-white dark:bg-gray-900 rounded-lg px-3 py-2.5 shadow-xl border border-gray-200 dark:border-gray-700 min-w-[140px] max-w-[180px]">
+                      {/* Green line */}
+                      <div className="flex items-center justify-between gap-3 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></div>
+                          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium">
+                            Green
+                          </span>
                         </div>
-                        <div className="space-y-1">
-                          {hoverData.values.map((value, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between gap-3 px-3 py-0.5 rounded-md bg-gray-50 dark:bg-gray-700/50 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                              style={{
-                                animation: `slideIn 0.2s ease-out ${idx * 0.03}s both`,
-                                borderLeft: `3px solid ${value.color}`,
-                              }}
-                            >
-                              <div className="flex items-center gap-2">
-                                <div
-                                  className="w-2.5 h-2.5 rounded-full shadow-sm"
-                                  style={{ backgroundColor: value.color }}
-                                />
-                                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                  Series {idx + 1}
-                                </span>
-                              </div>
-                              <span className="text-xs font-bold text-gray-900 dark:text-white tabular-nums">
-                                {value.value}K
-                              </span>
-                            </div>
-                          ))}
+                        <div className="text-gray-900 dark:text-white text-sm sm:text-base font-bold">
+                          {animatedGreen.toLocaleString()}
+                        </div>
+                      </div>
+                      
+                      {/* Blue line */}
+                      <div className="flex items-center justify-between gap-3 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0"></div>
+                          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium">
+                            Blue
+                          </span>
+                        </div>
+                        <div className="text-gray-900 dark:text-white text-sm sm:text-base font-bold">
+                          {animatedBlue.toLocaleString()}
+                        </div>
+                      </div>
+                      
+                      {/* Red line */}
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></div>
+                          <span className="text-gray-700 dark:text-gray-300 text-xs sm:text-sm font-medium">
+                            Red
+                          </span>
+                        </div>
+                        <div className="text-gray-900 dark:text-white text-sm sm:text-base font-bold">
+                          {animatedRed.toLocaleString()}
                         </div>
                       </div>
                     </div>
-                  )}
-              </div>
-              {/* X-axis labels */}
-              <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-4 sm:h-6 items-center" style={{ minWidth: '600px', width: 'max(600px, 100%)' }}>
-                {months.map((month) => (
-                  <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
-                ))}
+                    {/* Tooltip arrow */}
+                    <div
+                      className="absolute -bottom-1 w-2 h-2 bg-white dark:bg-gray-900 border-r border-b border-gray-200 dark:border-gray-700 rotate-45"
+                      style={{ 
+                        marginBottom: '-4px',
+                        left: tooltip.position === 'left' 
+                          ? '12px' 
+                          : tooltip.position === 'right' 
+                          ? 'auto' 
+                          : '50%',
+                        right: tooltip.position === 'right' ? '12px' : 'auto',
+                        transform: tooltip.position === 'left' || tooltip.position === 'right'
+                          ? 'none'
+                          : 'translateX(-50%) rotate(45deg)',
+                      }}
+                    ></div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
