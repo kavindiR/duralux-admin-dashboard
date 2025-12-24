@@ -279,13 +279,13 @@ export default function Analytics() {
   };
 
   // Handle mouse move for plus sign tracking (new system)
-  const handleMouseMoveTracking = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMoveTracking = useCallback((clientX: number) => {
     if (!chartContainerRef.current) return;
     
     const rect = chartContainerRef.current.getBoundingClientRect();
     const leftMargin = 40; // Account for Y-axis labels (ml-10 = 40px)
     const scrollLeft = chartContainerRef.current.scrollLeft;
-    const x = e.clientX - rect.left + scrollLeft - leftMargin;
+    const x = clientX - rect.left + scrollLeft - leftMargin;
     const chartWidth = 800; // SVG viewBox width
     
     if (x < 0 || x > chartWidth) {
@@ -315,7 +315,7 @@ export default function Analytics() {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     handleChartInteraction(e.clientX);
-    handleMouseMoveTracking(e);
+    handleMouseMoveTracking(e.clientX);
   };
 
   const handleMouseLeave = () => {
@@ -331,6 +331,7 @@ export default function Analytics() {
       touchStartX.current = e.touches[0].clientX;
       touchStartY.current = e.touches[0].clientY;
       handleChartInteraction(e.touches[0].clientX);
+      handleMouseMoveTracking(e.touches[0].clientX);
     }
   };
 
@@ -346,6 +347,7 @@ export default function Analytics() {
       }
       
       handleChartInteraction(e.touches[0].clientX);
+      handleMouseMoveTracking(e.touches[0].clientX);
     }
   };
 
@@ -582,17 +584,18 @@ export default function Analytics() {
               className="relative w-full flex-1 min-h-0 mt-3 sm:mt-6"
               style={{ 
                 minHeight: '250px',
-                overflow: 'visible'
+                overflow: 'hidden'
               }}
             >
               {/* Scrollable container for mobile */}
               <div 
                 ref={chartContainerRef}
-                className="relative w-full h-full overflow-x-auto overflow-y-visible cursor-crosshair"
+                className="relative w-full h-full overflow-x-auto overflow-y-hidden cursor-crosshair"
                 style={{ 
                   WebkitOverflowScrolling: 'touch',
                   scrollbarWidth: 'thin',
-                  minHeight: '250px'
+                  minHeight: '250px',
+                  maxHeight: '100%'
                 }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
@@ -601,9 +604,9 @@ export default function Analytics() {
                 onTouchEnd={handleTouchEnd}
               >
                 {/* Inner container with fixed width for chart */}
-                <div className="relative" style={{ minWidth: '600px', height: '100%', minHeight: '250px', overflow: 'visible' }}>
+                <div className="relative" style={{ minWidth: '600px', width: '100%', height: '100%', minHeight: '250px', overflow: 'visible' }}>
                   {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10 h-full">
+                  <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10" style={{ height: 'calc(100% - 24px)' }}>
                     <span>100K</span>
                     <span>80K</span>
                     <span>60K</span>
@@ -612,13 +615,13 @@ export default function Analytics() {
                     <span>0K</span>
                   </div>
                   {/* Chart area */}
-                  <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-6 right-0" style={{ height: 'calc(100% - 24px)', overflow: 'visible' }}>
+                  <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-6 right-0" style={{ height: 'calc(100% - 24px)', width: 'calc(100% - 2.5rem)', overflow: 'visible', position: 'relative' }}>
                       <svg 
                         ref={svgRef}
                         className="w-full h-full" 
                         viewBox="0 0 800 200" 
                         preserveAspectRatio="none" 
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ width: '100%', height: '100%', display: 'block' }}
                       >
                     <defs>
                       {/* Green gradient (light green) - top area */}
@@ -733,10 +736,12 @@ export default function Analytics() {
                   {/* Plus sign tracking - Hover vertical line and data points */}
                   {hoverData && (
                     <div
-                      className="absolute top-0 bottom-6 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
+                      className="absolute top-0 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
                       style={{
                         left: `${hoverData.x}px`,
                         transform: 'translateX(-50%)',
+                        height: 'calc(100% - 24px)',
+                        bottom: '24px',
                       }}
                     >
                       {/* Data points on the line - correctly positioned from 0K to 100K */}
@@ -764,7 +769,7 @@ export default function Analytics() {
                   </div>
                 </div>
                 {/* X-axis labels */}
-                <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-6 items-center" style={{ minWidth: '600px' }}>
+                <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-6 items-center" style={{ minWidth: '600px', width: 'calc(100% - 2.5rem)' }}>
                   {months.map((month) => (
                     <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
                   ))}
@@ -784,10 +789,11 @@ export default function Analytics() {
                         : 'translateX(-50%)',
                       transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
                       opacity: tooltip.visible ? 1 : 0,
-                      maxWidth: 'calc(100% - 20px)',
+                      maxWidth: 'calc(100vw - 40px)',
+                      width: 'max-content',
                     }}
                   >
-                    <div className="bg-white dark:bg-gray-900 rounded-lg px-3 py-2.5 shadow-xl border border-gray-200 dark:border-gray-700 min-w-[140px] max-w-[180px]">
+                    <div className="bg-white dark:bg-gray-900 rounded-lg px-3 py-2.5 shadow-xl border border-gray-200 dark:border-gray-700 min-w-[140px] max-w-[180px] sm:max-w-[200px]">
                       {/* Green line */}
                       <div className="flex items-center justify-between gap-3 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
                         <div className="flex items-center gap-2">
