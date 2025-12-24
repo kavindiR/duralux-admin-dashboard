@@ -402,58 +402,59 @@ const Projects = () => {
     <Layout breadcrumbs={[{ label: 'Projects' }, { label: 'Home' }, { label: 'List' }]} showSubHeader={false}>
       {/* Custom SubHeader matching image design */}
       <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 px-2 sm:px-4 lg:px-6 py-2 sm:py-3">
           {/* Left Section - Breadcrumbs */}
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm flex-wrap min-w-0 flex-1">
             <span className="font-bold text-gray-800 dark:text-gray-200">Projects</span>
-            <div className="w-px h-4 bg-gray-300 dark:bg-gray-600" />
+            <div className="w-px h-3 sm:h-4 bg-gray-300 dark:bg-gray-600" />
             <span className="font-bold text-gray-700 dark:text-gray-300">Home</span>
-            <span className="text-gray-400 dark:text-gray-500 mx-1">&gt;</span>
+            <span className="text-gray-400 dark:text-gray-500 mx-0.5 sm:mx-1">&gt;</span>
             <span className="text-gray-500 dark:text-gray-400">List</span>
           </div>
 
           {/* Right Section - Icon Buttons and Create Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 w-full sm:w-auto">
             <button 
               onClick={handleBarChart}
-              className="w-9 h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+              className="w-8 h-8 sm:w-9 sm:h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center flex-shrink-0"
               title="View Analytics"
             >
-              <BarChart3 className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 dark:text-gray-300" />
             </button>
             <button 
               onClick={handleFilter}
-              className={`w-9 h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center ${showFilter ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300' : ''}`}
+              className={`w-8 h-8 sm:w-9 sm:h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center flex-shrink-0 ${showFilter ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300' : ''}`}
               title="Filter Projects"
             >
-              <Filter className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 dark:text-gray-300" />
             </button>
             <button 
               onClick={handlePaperclip}
-              className="w-9 h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+              className="w-8 h-8 sm:w-9 sm:h-9 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center flex-shrink-0"
               title="Export Projects"
             >
-              <Paperclip className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <Paperclip className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 dark:text-gray-300" />
             </button>
             <button 
               onClick={() => navigate('/projects/create')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center gap-2 text-sm font-medium"
+              className="px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium whitespace-nowrap flex-1 sm:flex-initial"
             >
               <span>+</span>
-              <span>CREATE PROJECT</span>
+              <span className="hidden xs:inline">CREATE PROJECT</span>
+              <span className="xs:hidden">CREATE</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="p-2 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 lg:space-y-6">
         {/* Table Container */}
         <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Search and Entries Controls */}
-          <div className="bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600 dark:text-gray-400">Show</label>
+          <div className="bg-white dark:bg-gray-800 p-2 sm:p-3 lg:p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <label className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Show</label>
                 <div className="relative inline-block">
                   <select
                     value={entriesPerPage}
@@ -461,19 +462,19 @@ const Projects = () => {
                       setEntriesPerPage(Number(e.target.value));
                       setCurrentPage(1);
                     }}
-                    className="px-3 py-1.5 pr-8 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-300 appearance-none cursor-pointer"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 pr-6 sm:pr-8 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900 text-xs sm:text-sm text-gray-700 dark:text-gray-300 appearance-none cursor-pointer"
                   >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>
                     <option value={100}>100</option>
                   </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-gray-600 dark:text-gray-400 pointer-events-none" />
                 </div>
-                <label className="text-sm text-gray-600 dark:text-gray-400">entries</label>
+                <label className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">entries</label>
               </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <label className="text-sm text-gray-600 dark:text-gray-400">Search:</label>
+              <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                <label className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Search:</label>
                 <input
                   type="text"
                   value={searchTerm}
@@ -482,63 +483,63 @@ const Projects = () => {
                     setCurrentPage(1);
                   }}
                   placeholder="Search..."
-                  className="flex-1 sm:w-64 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-300"
+                  className="flex-1 sm:w-48 lg:w-64 px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-xs sm:text-sm text-gray-700 dark:text-gray-300 min-w-0"
                 />
               </div>
             </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto">
+          <div className="overflow-x-auto -mx-2 sm:mx-0">
+            <table className="w-full table-auto min-w-[800px]">
               <thead className="bg-white dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="px-4 py-3 text-left border-b-2 border-gray-200 dark:border-gray-700">
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left border-b-2 border-gray-200 dark:border-gray-700">
                     <input 
                       type="checkbox" 
-                      className="rounded border-gray-300 dark:border-gray-600"
+                      className="rounded border-gray-300 dark:border-gray-600 w-3 h-3 sm:w-4 sm:h-4"
                       checked={currentProjects.length > 0 && selectedProjects.size === currentProjects.length}
                       onChange={handleSelectAll}
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>PROJECT-NAME</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[150px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">PROJECT-NAME</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>CUSTOMER</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[120px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">CUSTOMER</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>START DATE</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[100px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">START DATE</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>END DATE</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[100px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">END DATE</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>ASSIGNED</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[150px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">ASSIGNED</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>STATUS</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[120px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">STATUS</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-1.5">
-                      <span>ACTIONS</span>
-                      <ArrowUp className="w-3 h-3 text-gray-400" />
+                  <th className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide border-b-2 border-gray-200 dark:border-gray-700 min-w-[100px]">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <span className="truncate">ACTIONS</span>
+                      <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gray-400 flex-shrink-0" />
                     </div>
                   </th>
                 </tr>
@@ -546,19 +547,21 @@ const Projects = () => {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {currentProjects.map(project => (
                   <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="px-4 py-3">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3">
                       <input 
                         type="checkbox" 
-                        className="rounded border-gray-300 dark:border-gray-600"
+                        className="rounded border-gray-300 dark:border-gray-600 w-3 h-3 sm:w-4 sm:h-4"
                         checked={selectedProjects.has(project.id)}
                         onChange={(e) => handleSelectProject(project.id, e.target.checked)}
                       />
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <ProjectIcon logoType={project.logoType} />
-                        <div className="flex flex-col gap-0.5">
-                          <div className="text-sm leading-tight">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div className="flex-shrink-0">
+                          <ProjectIcon logoType={project.logoType} />
+                        </div>
+                        <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                          <div className="text-xs sm:text-sm leading-tight">
                             {project.name.includes(':') ? (
                               <>
                                 <span className="font-bold text-gray-900 dark:text-white">
@@ -569,54 +572,56 @@ const Projects = () => {
                                 </span>
                               </>
                             ) : (
-                              <span className="font-bold text-gray-900 dark:text-white">
+                              <span className="font-bold text-gray-900 dark:text-white truncate">
                                 {project.name}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 leading-tight">
+                          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 leading-tight line-clamp-1">
                             {project.description}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        {project.customer.hasImage ? (
-                          <ProfilePictureAvatar name={project.customer.name} />
-                        ) : (
-                          <div className={`w-6 h-6 ${project.customer.avatarColor || 'bg-blue-500'} rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0`}>
-                            {project.customer.avatar}
-                          </div>
-                        )}
-                        <span className="text-sm text-gray-900 dark:text-white font-semibold">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3">
+                      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                        <div className="flex-shrink-0">
+                          {project.customer.hasImage ? (
+                            <ProfilePictureAvatar name={project.customer.name} />
+                          ) : (
+                            <div className={`w-5 h-5 sm:w-6 sm:h-6 ${project.customer.avatarColor || 'bg-blue-500'} rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-semibold`}>
+                              {project.customer.avatar}
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-xs sm:text-sm text-gray-900 dark:text-white font-semibold truncate">
                           {project.customer.name}
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-normal">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-900 dark:text-white font-normal whitespace-nowrap">
                       {project.startDate}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-900 dark:text-white font-normal">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-900 dark:text-white font-normal whitespace-nowrap">
                       {project.endDate}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 flex items-center gap-2.5 justify-between">
-                        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3">
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2.5 justify-between min-w-0">
+                        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 min-w-0">
                           <ProfilePictureAvatar name={project.assigned.email} />
-                          <span className="text-sm text-gray-900 dark:text-white font-normal truncate">
+                          <span className="text-xs sm:text-sm text-gray-900 dark:text-white font-normal truncate">
                             {project.assigned.email}
                           </span>
                         </div>
-                        <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-auto" />
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
                       </div>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 flex items-center gap-2.5 justify-between">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3">
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2.5 justify-between min-w-0">
                         <select
                           value={project.status}
                           onChange={(e) => handleStatusChange(project.id, e.target.value)}
-                          className="flex-1 bg-transparent text-sm text-gray-900 dark:text-white font-normal cursor-pointer appearance-none border-0 outline-none"
+                          className="flex-1 bg-transparent text-xs sm:text-sm text-gray-900 dark:text-white font-normal cursor-pointer appearance-none border-0 outline-none min-w-0"
                         >
                           <option value="In Progress">In Progress</option>
                           <option value="Not Started">Not Started</option>
@@ -624,30 +629,30 @@ const Projects = () => {
                           <option value="Declined">Declined</option>
                           <option value="Finished">Finished</option>
                         </select>
-                        <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 pointer-events-none" />
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 pointer-events-none" />
                       </div>
                     </td>
-                    <td className="px-4 py-3 relative">
-                      <div className="flex items-center gap-2">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 relative">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
                         <button 
                           onClick={() => handleViewProject(project.id)}
-                          className="w-8 h-8 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                          className="w-7 h-7 sm:w-8 sm:h-8 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
                           title="View Project"
                         >
-                          <Eye className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+                          <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-700 dark:text-gray-300" />
                         </button>
                         <div className="relative" ref={menuRef}>
                           <button 
                             onClick={(e) => handleMoreOptions(project.id, e)}
-                            className="w-7 h-7 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                            className="w-6 h-6 sm:w-7 sm:h-7 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex-shrink-0"
                             title="More Options"
                           >
-                            <MoreHorizontal className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
+                            <MoreHorizontal className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-700 dark:text-gray-300" />
                           </button>
                           {showMoreMenu === project.id && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                            <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
                               <button 
-                                className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="w-full px-3 sm:px-4 py-1.5 sm:py-2 text-left text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 onClick={() => {
                                   handleViewProject(project.id);
                                   setShowMoreMenu(null);
@@ -656,7 +661,7 @@ const Projects = () => {
                                 View Details
                               </button>
                               <button 
-                                className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="w-full px-3 sm:px-4 py-1.5 sm:py-2 text-left text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 onClick={() => {
                                   navigate(`/projects/create?id=${project.id}`);
                                   setShowMoreMenu(null);
@@ -665,7 +670,7 @@ const Projects = () => {
                                 Edit Project
                               </button>
                               <button 
-                                className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="w-full px-3 sm:px-4 py-1.5 sm:py-2 text-left text-xs sm:text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 onClick={() => {
                                   if (confirm('Are you sure you want to delete this project?')) {
                                     console.log(`Delete project ${project.id}`);
@@ -687,15 +692,15 @@ const Projects = () => {
           </div>
 
           {/* Pagination */}
-          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="px-2 sm:px-3 lg:px-4 py-2 sm:py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
               Showing {startIndex + 1} to {Math.min(endIndex, filteredProjects.length)} of {filteredProjects.length} entries
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <button
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded text-sm text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-500 rounded text-xs sm:text-sm text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
               >
                 Previous
               </button>
@@ -714,7 +719,7 @@ const Projects = () => {
                   <button
                     key={pageNum}
                     onClick={() => handlePageChange(pageNum)}
-                    className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                    className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
                       currentPage === pageNum
                         ? 'bg-blue-600 text-white'
                         : 'border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -727,7 +732,7 @@ const Projects = () => {
               <button
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1.5 border border-gray-300 dark:border-gray-500 rounded text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-2 sm:px-3 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-500 rounded text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
               >
                 Next
               </button>
@@ -738,19 +743,19 @@ const Projects = () => {
         {/* Floating Settings Button */}
         <button 
           onClick={handleSettings}
-          className="fixed right-0 top-1/2 -translate-y-1/2 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-l-lg shadow-lg flex items-center justify-center transition-colors z-50"
+          className="fixed right-0 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-l-lg shadow-lg flex items-center justify-center transition-colors z-50"
           title="Settings"
         >
-          <Settings className="w-6 h-6" />
+          <Settings className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
         </button>
 
         {/* Filter Dropdown */}
         {showFilter && (
-          <div className="absolute top-full left-4 mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 p-4">
-            <div className="space-y-4">
+          <div className="absolute top-full left-2 sm:left-4 mt-2 w-56 sm:w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 p-3 sm:p-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-sm">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">Status</label>
+                <select className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-xs sm:text-sm">
                   <option value="">All Statuses</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Not Started">Not Started</option>
@@ -762,13 +767,13 @@ const Projects = () => {
               <div className="flex gap-2">
                 <button 
                   onClick={() => setShowFilter(false)}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+                  className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs sm:text-sm font-medium"
                 >
                   Apply
                 </button>
                 <button 
                   onClick={() => setShowFilter(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium"
+                  className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-xs sm:text-sm font-medium"
                 >
                   Clear
                 </button>

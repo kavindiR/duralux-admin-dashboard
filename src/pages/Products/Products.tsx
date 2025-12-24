@@ -5,10 +5,10 @@ import { fetchProducts, Product } from '../../lib/mockApi';
 export default function Products() {
   return (
     <Layout breadcrumbs={[{ label: 'Products' }, { label: 'Home' }, { label: 'List' }]}>
-      <div className="p-4 sm:p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Products Management</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">View and manage product inventory</p>
+      <div className="p-3 sm:p-4 lg:p-6">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">Products Management</h1>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">View and manage product inventory</p>
         </div>
 
         <PaginatedTable<Product>

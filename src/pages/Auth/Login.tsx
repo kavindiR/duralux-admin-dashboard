@@ -126,13 +126,13 @@ export default function Login() {
       </div>
 
       {/* Login Card */}
-      <div className="w-full max-w-md relative z-10">
-        <form onSubmit={handleSubmit} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800/50">
+      <div className="w-full max-w-md relative z-10 px-2">
+        <form onSubmit={handleSubmit} className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl p-4 sm:p-6 lg:p-8 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-800/50">
           {/* Logo and Header */}
-          <div className="text-center mb-8">
-             <div className="mb-4 sm:mb-6">
+          <div className="text-center mb-6 sm:mb-8">
+             <div className="mb-3 sm:mb-4 lg:mb-6">
                <h1 
-                 className="text-4xl sm:text-5xl md:text-6xl font-black text-black dark:text-white mb-1 tracking-wide leading-none select-none"
+                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-black dark:text-white mb-1 tracking-wide leading-none select-none"
                  style={{ 
                    fontFamily: '"Times New Roman", "Georgia", "Palatino", serif',
                    fontWeight: 900,
@@ -145,8 +145,8 @@ export default function Login() {
                  DURALUX
                </h1>
              </div>
-            <p className="text-gray-600 dark:text-gray-400 font-medium text-base sm:text-lg">Admin Dashboard</p>
-            <div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-2">
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-sm sm:text-base lg:text-lg">Admin Dashboard</p>
+            <div className="mt-2 sm:mt-3 lg:mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 px-2">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Welcome back! Please sign in to continue</span>
             </div>
@@ -154,31 +154,31 @@ export default function Login() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3 animate-shake">
-              <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-white text-xs font-bold">!</span>
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-2 sm:gap-3 animate-shake">
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-white text-[10px] sm:text-xs font-bold">!</span>
               </div>
-              <div className="text-red-600 dark:text-red-400 text-sm flex-1">{error}</div>
+              <div className="text-red-600 dark:text-red-400 text-xs sm:text-sm flex-1">{error}</div>
             </div>
           )}
 
           {/* Form Fields */}
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="w-5 h-5 text-gray-400" strokeWidth={2} />
+                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" strokeWidth={2} />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 lg:py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm sm:text-base"
                   placeholder="admin@duralux.com"
                   disabled={isSubmitting}
                 />
@@ -187,32 +187,32 @@ export default function Login() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-gray-400" strokeWidth={2} />
+                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                  <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" strokeWidth={2} />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2.5 sm:py-3 lg:py-3.5 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm sm:text-base"
                   placeholder="Enter your password"
                   disabled={isSubmitting}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" strokeWidth={2} />
+                    <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2} />
                   ) : (
-                    <Eye className="w-5 h-5" strokeWidth={2} />
+                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2} />
                   )}
                 </button>
               </div>
@@ -223,44 +223,44 @@ export default function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-400 disabled:to-indigo-400 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full mt-6 sm:mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-400 disabled:to-indigo-400 disabled:cursor-not-allowed text-white font-semibold py-2.5 sm:py-3 lg:py-3.5 px-4 sm:px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             {isSubmitting ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 <span>Signing in...</span>
               </>
             ) : (
               <>
-                <Shield className="w-5 h-5" strokeWidth={2.5} />
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.5} />
                 <span>Sign In</span>
               </>
             )}
           </button>
 
           {/* Development Mode Info */}
-          <div className="mt-6 space-y-2">
+          <div className="mt-4 sm:mt-6 space-y-2">
             {!import.meta.env.VITE_FIREBASE_PROJECT_ID && import.meta.env.DEV ? (
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-                <p className="text-xs font-bold text-blue-900 dark:text-blue-300 mb-2 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Development Mode - Test Credentials
+              <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                <p className="text-[10px] sm:text-xs font-bold text-blue-900 dark:text-blue-300 mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                  <span>Development Mode - Test Credentials</span>
                 </p>
-                <div className="space-y-1.5 text-xs text-blue-700 dark:text-blue-400">
+                <div className="space-y-1 sm:space-y-1.5 text-[10px] sm:text-xs text-blue-700 dark:text-blue-400">
                   <p>
                     <span className="font-semibold">Email:</span>{' '}
-                    <span className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded">admin@duralux.com</span>
+                    <span className="font-mono bg-blue-100 dark:bg-blue-900/30 px-1.5 sm:px-2 py-0.5 rounded break-all">admin@duralux.com</span>
                   </p>
                   <p>
                     <span className="font-semibold">Password:</span>{' '}
-                    <span className="font-mono bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded">admin123</span>
+                    <span className="font-mono bg-blue-100 dark:bg-blue-900/30 px-1.5 sm:px-2 py-0.5 rounded break-all">admin123</span>
                   </p>
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+              <p className="text-[10px] sm:text-xs text-center text-gray-500 dark:text-gray-400 px-2">
                 {import.meta.env.VITE_FIREBASE_PROJECT_ID
-                  ? 'Use your Firebase email/password credentials'
+                  ? 'admin@duralux.com / admin123'
                   : 'Firebase not configured. Please set VITE_FIREBASE_* environment variables in .env file.'}
               </p>
             )}
