@@ -307,7 +307,7 @@ export default function Analytics() {
     ];
 
     setHoverData({
-      x: svgX + leftMargin, // SVG X position + left margin for absolute positioning
+      x: svgX, // SVG X position (will be positioned relative to chart area)
       values,
       month: months[clampedIndex],
     });
@@ -594,8 +594,7 @@ export default function Analytics() {
                 style={{ 
                   WebkitOverflowScrolling: 'touch',
                   scrollbarWidth: 'thin',
-                  minHeight: '250px',
-                  maxHeight: '100%'
+                  minHeight: '250px'
                 }}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
@@ -604,7 +603,7 @@ export default function Analytics() {
                 onTouchEnd={handleTouchEnd}
               >
                 {/* Inner container with fixed width for chart */}
-                <div className="relative" style={{ minWidth: '600px', width: '100%', height: '100%', minHeight: '250px', overflow: 'visible' }}>
+                <div className="relative" style={{ minWidth: '600px', height: '100%', minHeight: '250px', overflow: 'visible', position: 'relative' }}>
                   {/* Y-axis labels */}
                   <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10" style={{ height: 'calc(100% - 24px)' }}>
                     <span>100K</span>
@@ -615,13 +614,13 @@ export default function Analytics() {
                     <span>0K</span>
                   </div>
                   {/* Chart area */}
-                  <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-6 right-0" style={{ height: 'calc(100% - 24px)', width: 'calc(100% - 2.5rem)', overflow: 'visible', position: 'relative' }}>
+                  <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-6 left-0 right-0" style={{ height: 'calc(100% - 24px)', overflow: 'visible' }}>
                       <svg 
                         ref={svgRef}
                         className="w-full h-full" 
                         viewBox="0 0 800 200" 
                         preserveAspectRatio="none" 
-                        style={{ width: '100%', height: '100%', display: 'block' }}
+                        style={{ width: '100%', height: '100%', display: 'block', minWidth: '600px' }}
                       >
                     <defs>
                       {/* Green gradient (light green) - top area */}
@@ -736,12 +735,10 @@ export default function Analytics() {
                   {/* Plus sign tracking - Hover vertical line and data points */}
                   {hoverData && (
                     <div
-                      className="absolute top-0 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
+                      className="absolute top-0 bottom-6 w-px bg-gray-400 dark:bg-gray-500 transition-all duration-150 ease-out pointer-events-none z-20"
                       style={{
                         left: `${hoverData.x}px`,
                         transform: 'translateX(-50%)',
-                        height: 'calc(100% - 24px)',
-                        bottom: '24px',
                       }}
                     >
                       {/* Data points on the line - correctly positioned from 0K to 100K */}
@@ -769,7 +766,7 @@ export default function Analytics() {
                   </div>
                 </div>
                 {/* X-axis labels */}
-                <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-6 items-center" style={{ minWidth: '600px', width: 'calc(100% - 2.5rem)' }}>
+                <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-6 items-center" style={{ minWidth: '600px' }}>
                   {months.map((month) => (
                     <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
                   ))}
