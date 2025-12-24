@@ -41,9 +41,9 @@ export default function PaginatedTable<T>({ fetchPage, renderRow, columns, pageS
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-2">
+      <div className="p-2 sm:p-3 lg:p-4 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial">
             <input
               value={query}
               onChange={e => {
@@ -51,10 +51,10 @@ export default function PaginatedTable<T>({ fetchPage, renderRow, columns, pageS
                 setPage(1);
               }}
               placeholder="Search..."
-              className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md text-sm w-full sm:w-64 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-700 rounded-md text-xs sm:text-sm w-full sm:w-48 lg:w-64 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-0"
             />
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <label className="whitespace-nowrap">Rows per page:</label>
             <select
               value={pageSize}
@@ -62,7 +62,7 @@ export default function PaginatedTable<T>({ fetchPage, renderRow, columns, pageS
                 setPageSize(Number(e.target.value));
                 setPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
             >
               {pageSizeOptions.map(n => (
                 <option key={n} value={n}>
@@ -115,28 +115,28 @@ export default function PaginatedTable<T>({ fetchPage, renderRow, columns, pageS
         </table>
       </div>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm">
+      <div className="p-2 sm:p-3 lg:p-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 text-xs sm:text-sm">
           <div className="text-gray-600 dark:text-gray-400">
             Showing <span className="font-medium text-gray-900 dark:text-white">{(page - 1) * pageSize + 1}</span> to{' '}
             <span className="font-medium text-gray-900 dark:text-white">{Math.min(page * pageSize, total)}</span> of{' '}
             <span className="font-medium text-gray-900 dark:text-white">{total}</span> results
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1 || loading}
-              className="px-4 py-2 rounded-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               Previous
             </button>
-            <div className="px-4 py-2 text-gray-700 dark:text-gray-300">
+            <div className="px-2 sm:px-4 py-1.5 sm:py-2 text-gray-700 dark:text-gray-300 whitespace-nowrap">
               Page <span className="font-medium">{page}</span> of <span className="font-medium">{pages}</span>
             </div>
             <button
               onClick={() => setPage(p => Math.min(pages, p + 1))}
               disabled={page === pages || loading}
-              className="px-4 py-2 rounded-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-md bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               Next
             </button>

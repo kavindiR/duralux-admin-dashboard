@@ -44,8 +44,8 @@ export default function Layout({
         {showSubHeader && (
           <SubHeader breadcrumbs={breadcrumbs} dateRange={subHeaderDateRange} />
         )}
-        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950">
-          <div className="max-w-full">{children}</div>
+        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950 overflow-x-hidden">
+          <div className="max-w-full w-full">{children}</div>
         </main>
       </div>
     </div>

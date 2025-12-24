@@ -376,21 +376,21 @@ export default function Analytics() {
       breadcrumbs={[{ label: 'Dashboards' }, { label: 'Home' }, { label: 'Analytics' }]}
       subHeaderDateRange="DEC 01,25 - DEC 31,25"
     >
-      <div className="p-6 min-h-screen">
+      <div className="p-3 sm:p-4 lg:p-6 min-h-screen">
 
         {/* Email Reports Section */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6 mb-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 mb-4 sm:mb-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-1">Email Reports</h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Email Campaign Reports</p>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 dark:text-white mb-1">Email Reports</h1>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Email Campaign Reports</p>
             </div>
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap">
               VIEW ALLS
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {emailStats.map((stat, index) => (
               <StatCard key={index} {...stat} />
             ))}
@@ -398,24 +398,24 @@ export default function Analytics() {
         </div>
 
         {/* Visitors Overview and Browser States */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           {/* Visitors Overview - Left Panel */}
-          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6 shadow-sm flex flex-col">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Visitors Overview</h2>
-              <button className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-                <Info size={18} className="text-gray-400" />
+          <div className="xl:col-span-2 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm flex flex-col">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Visitors Overview</h2>
+              <button className="p-1 sm:p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors flex-shrink-0">
+                <Info size={16} className="sm:w-[18px] sm:h-[18px] text-gray-400" />
               </button>
             </div>
             <div 
               ref={chartRef}
-              className="relative w-full cursor-crosshair flex-1 min-h-0 mt-6"
-              style={{ minHeight: '300px' }}
+              className="relative w-full cursor-crosshair flex-1 min-h-0 mt-3 sm:mt-6 overflow-x-auto"
+              style={{ minHeight: '250px' }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
               {/* Y-axis labels */}
-              <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-xs text-gray-500 dark:text-gray-400 pr-2 z-10 w-10">
+              <div className="absolute left-0 top-0 bottom-4 sm:bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 pr-1 sm:pr-2 z-10 w-6 sm:w-8 lg:w-10">
                 <span>100K</span>
                 <span>80K</span>
                 <span>60K</span>
@@ -424,7 +424,7 @@ export default function Analytics() {
                 <span>0K</span>
               </div>
               {/* Chart area */}
-              <div className="ml-10 absolute top-0 bottom-6 right-0">
+              <div className="ml-6 sm:ml-8 lg:ml-10 absolute top-0 bottom-4 sm:bottom-6 right-0 min-w-[600px]">
                   <svg className="w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
                     <defs>
                       {/* Green gradient (light green) - top area */}
@@ -607,21 +607,21 @@ export default function Analytics() {
                   )}
               </div>
               {/* X-axis labels */}
-              <div className="absolute bottom-0 left-10 right-0 flex justify-between text-xs text-gray-500 dark:text-gray-400 h-6 items-center">
+              <div className="absolute bottom-0 left-6 sm:left-8 lg:left-10 right-0 flex justify-between text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 h-4 sm:h-6 items-center min-w-[600px]">
                 {months.map((month) => (
-                  <span key={month} className="flex-1 text-center">{month}</span>
+                  <span key={month} className="flex-1 text-center truncate px-0.5">{month}</span>
                 ))}
               </div>
             </div>
           </div>
 
           {/* Browser States - Right Panel */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6 shadow-sm relative overflow-visible">
+          <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-3 sm:p-4 lg:p-6 shadow-sm relative overflow-visible">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white" style={{ fontWeight: 700 }}>Browser States</h2>
-              <button className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                <span className="text-xs font-normal text-gray-600 dark:text-gray-400" style={{ fontStyle: 'normal' }}>i</span>
+            <div className="flex items-center justify-between mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white" style={{ fontWeight: 700 }}>Browser States</h2>
+              <button className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex-shrink-0">
+                <span className="text-[10px] sm:text-xs font-normal text-gray-600 dark:text-gray-400" style={{ fontStyle: 'normal' }}>i</span>
               </button>
             </div>
 
@@ -630,21 +630,21 @@ export default function Analytics() {
               {browserStats.map((browser, index) => (
                 <div key={index}>
                   {index > 0 && (
-                    <div className="h-px bg-gray-200 dark:bg-gray-700 my-3" style={{ marginLeft: '-1.5rem', marginRight: '-1.5rem' }}></div>
+                    <div className="h-px bg-gray-200 dark:bg-gray-700 my-2 sm:my-3" style={{ marginLeft: '-0.75rem', marginRight: '-0.75rem' }}></div>
                   )}
-                  <div className="flex items-center gap-3 py-2">
+                  <div className="flex items-center gap-2 sm:gap-3 py-1.5 sm:py-2">
                     {/* Browser Icon */}
-                    <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 rounded flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {browser.icon}
                     </div>
                     {/* Browser Name */}
-                    <span className="text-sm text-gray-600 dark:text-gray-400 flex-1" style={{ fontWeight: 400 }}>{browser.name}</span>
+                    <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-1 truncate" style={{ fontWeight: 400 }}>{browser.name}</span>
                     {/* Percentage */}
-                    <span className="text-sm text-gray-600 dark:text-gray-400 font-normal whitespace-nowrap flex-shrink-0">{browser.percentage}%</span>
+                    <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-normal whitespace-nowrap flex-shrink-0">{browser.percentage}%</span>
                     {/* Progress Bar */}
-                    <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2 flex-shrink-0" style={{ backgroundColor: '#E9ECEF' }}>
+                    <div className="w-16 sm:w-20 lg:w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2 flex-shrink-0" style={{ backgroundColor: '#E9ECEF' }}>
                       <div 
-                        className="h-2 rounded-full" 
+                        className="h-1.5 sm:h-2 rounded-full" 
                         style={{ 
                           width: `${browser.percentage}%`,
                           backgroundColor: browser.progressColor || browser.color
@@ -657,32 +657,32 @@ export default function Analytics() {
             </div>
 
             {/* Footer - EXPLORE DETAILS */}
-            <div className="mt-6 text-center">
-              <button className="text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wide hover:text-gray-900 dark:hover:text-white transition-colors" style={{ letterSpacing: '0.05em' }}>
+            <div className="mt-4 sm:mt-6 text-center">
+              <button className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wide hover:text-gray-900 dark:hover:text-white transition-colors" style={{ letterSpacing: '0.05em' }}>
                 EXPLORE DETAILS
               </button>
             </div>
 
             {/* Floating Action Button - Right Edge (Square Box) */}
-            <button className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10">
-              <Settings size={18} className="text-white" />
+            <button className="absolute -right-2 sm:-right-3 top-1/2 transform -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10">
+              <Settings size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
             </button>
           </div>
         </div>
 
         {/* Bottom Row KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           {metrics.map((metric, index) => (
-            <div key={index} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6 shadow-sm flex flex-col">
+            <div key={index} className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 sm:p-6 shadow-sm flex flex-col">
               {/* Top row: Title on left, Current value on right */}
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">{metric.title}</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{metric.previous}</p>
+              <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white mb-1 truncate">{metric.title}</h3>
+                  <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">{metric.previous}</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">{metric.value}</div>
-                  <div className={`text-sm font-medium ${metric.changeColor}`}>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{metric.value}</div>
+                  <div className={`text-xs sm:text-sm font-medium ${metric.changeColor}`}>
                     {metric.change}
                   </div>
                 </div>
