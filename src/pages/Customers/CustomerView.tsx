@@ -105,7 +105,7 @@ const CustomerView = () => {
                   <button className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-bold border border-gray-200 dark:border-gray-700 rounded py-2 sm:py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span className="hidden xs:inline">DELETE</span>
-                    <span className="xs:hidden">DEL</span>
+                    <span className="xs:hidden">DELETE</span>
                   </button>
                   <button className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-bold rounded py-2 sm:py-2.5 bg-blue-600 text-white hover:bg-blue-700 transition-colors">
                     <Edit className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -118,7 +118,7 @@ const CustomerView = () => {
           </div>
 
           {/* Right card */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 relative">
             <div className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800 h-full flex flex-col">
               {/* Tabs */}
               <div className="flex border-b border-gray-200 dark:border-gray-800 text-[10px] sm:text-xs items-center overflow-x-auto">
@@ -137,9 +137,6 @@ const CustomerView = () => {
                     </button>
                   ))}
                 </div>
-                <button className="px-2 sm:px-3 py-1 sm:py-1.5 mr-2 sm:mr-4 text-[10px] sm:text-[11px] border border-gray-200 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 font-bold uppercase transition-colors whitespace-nowrap flex-shrink-0">
-                  UPDATES
-                </button>
               </div>
 
               {/* Content */}
@@ -154,18 +151,18 @@ const CustomerView = () => {
                           UPDATES
                         </button>
                       </div>
-                      <div className="space-y-3">
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <p>
                           John Doe is a frontend developer with over 5 years of experience creating high-quality,
                           user-friendly websites and web applications. He has a strong understanding of web development
                           technologies and a keen eye for design.
                         </p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <p>
                           John is proficient in languages such as HTML, CSS, and JavaScript, and is experienced in using
                           popular frontend frameworks such as React and Angular. He is also well-versed in user experience
                           design and uses his knowledge to create engaging and intuitive user interfaces.
                         </p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <p>
                           Throughout his career, John has worked on a wide range of projects for clients in various
                           industries, including e-commerce, healthcare, and education. He takes a collaborative approach
                           to development and enjoys working closely with clients and other developers to bring their ideas
@@ -175,7 +172,7 @@ const CustomerView = () => {
                     </div>
 
                     {/* Profile Details */}
-                    <div className="relative">
+                    <div>
                       <div className="flex items-center justify-between mb-6">
                         <div className="text-base font-bold text-gray-900 dark:text-white">Profile Details:</div>
                         <button className="px-3 py-1.5 text-[11px] border border-gray-200 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 uppercase font-bold transition-colors">
@@ -235,16 +232,17 @@ const CustomerView = () => {
                           </span>
                         </div>
                       </div>
-
-                      {/* Blue Settings Icon - Right Edge */}
-                      <button className="absolute -right-2 sm:-right-3 top-0 w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10">
-                        <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                      </button>
                     </div>
                   </>
                 )}
               </div>
             </div>
+            {/* Blue Settings Icon - Right Edge, aligned with Profile About section */}
+            {activeTab === 'Overview' && (
+              <button className="absolute right-0 top-20 sm:top-24 lg:top-28 w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center shadow-lg transition-colors z-10 -mr-2 sm:-mr-3 lg:-mr-4">
+                <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </button>
+            )}
           </div>
         </div>
       </div>
